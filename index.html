@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Лабораторна робота №1: хімічна рівновага</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&family=Literata:wght@600;700&display=swap">
+<style>
+/* STREAMING_CHUNK:Configuring CSS variables and base styles... */
+:root{--bg:#f0f4f6;--paper:#ffffff;--ink:#121e24;--mute:#54656f;--line:#ced8dd;--acc:#0d6970;--acc-hover:#0a5258;--on:#ffffff;--red:#ba1a1a;--ok:#1b7a3d;--bad:#b3261e;--shadow:0 4px 12px rgba(0,0,0,0.05);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c1519;--paper:#162329;--ink:#e1e9ed;--mute:#8ca0ab;--line:#273942;--acc:#42b2bc;--acc-hover:#55c4ce;--on:#081014;--red:#ff897d;--ok:#5fd68a;--bad:#ff8a80;--shadow:0 4px 12px rgba(0,0,0,0.3)}}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "IBM Plex Sans",system-ui,sans-serif}
+h1,h2,h3{font-family:Literata,Georgia,serif;line-height:1.25;margin:0 0 .6em}h2{font-size:1.35rem;color:var(--acc)}h3{font-size:1.08rem;margin-top:1.2em}
+#top{position:sticky;top:0;background:var(--paper);border-bottom:1px solid var(--line);padding:8px 14px;z-index:5;padding-top:calc(8px + env(safe-area-inset-top,0px));box-shadow:var(--shadow)}
+#top div{display:flex;gap:8px;align-items:center;max-width:820px;margin:0 auto}
+#top select{flex:1;min-width:0;font-weight:600}
+#save_status{font-size:.78rem;color:var(--ok);font-weight:600;white-space:nowrap;opacity:0;transition:opacity .3s ease}
+#btn_reset_top{font-size:.75rem;padding:4px 8px;min-height:auto;background:transparent;color:var(--mute);border:1px solid var(--line)}
+#btn_reset_top:hover{color:var(--red);border-color:var(--red)}
+#bar{height:5px;background:var(--line);margin-top:6px;border-radius:3px;overflow:hidden}#bar i{display:block;height:100%;background:var(--acc);transition:width .3s ease}
+main{max-width:820px;margin:0 auto;padding:18px 14px 110px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:22px;box-shadow:var(--shadow);margin-bottom:16px}
+.cover{text-align:center}.cover .col{font-weight:600;font-size:1.05rem;color:var(--mute)}.cover h1{font-size:1.6rem;margin:20px 0 8px;color:var(--ink)}.cover .l{text-align:left}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.93rem}th,td{border:1px solid var(--line);padding:8px 11px;text-align:left}th{background:var(--bg);font-weight:600}td.n{text-align:center;width:64px}
+.eq{font-family:Literata,serif;text-align:center;background:var(--bg);padding:12px;border-radius:6px;margin:14px 0;overflow-x:auto;border:1px solid var(--line);font-size:1.05rem}
+.box{background:var(--bg);border-left:4px solid var(--acc);padding:12px 16px;border-radius:0 6px 6px 0;margin:14px 0}
+.lab{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;align-items:flex-end;margin:18px 0}
+.tc{display:flex;flex-direction:column;align-items:center;gap:8px;width:145px;text-align:center;font-size:.88rem}.tc button{width:100%}
+.tube,.bk{position:relative;overflow:hidden;border:2px solid var(--mute);border-top:0;background:rgba(255,255,255,0.05)}
+.tube{width:46px;height:140px;border-radius:0 0 23px 23px}.fl{width:78px;height:120px;border-radius:0 0 39px 39px}.bk{width:120px;height:110px;border-radius:0 0 12px 12px}
+.tube i,.bk i{position:absolute;left:0;right:0;bottom:0;transition:background .6s,height .4s}
+button{font:inherit;font-size:.92rem;font-weight:600;background:var(--acc);color:var(--on);border:0;border-radius:6px;padding:9px 15px;cursor:pointer;min-height:42px;transition:all .2s}
+button:hover:not(:disabled){background:var(--acc-hover)}
+button:disabled{opacity:.35;cursor:default}button.g{background:transparent;color:var(--acc);border:1px solid var(--acc)}
+button.g:hover:not(:disabled){background:rgba(13,105,112,0.08)}
+:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.steps{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.sy{display:flex;align-items:center;justify-content:center;margin:20px 0}
+.barrel{height:70px;border:2px solid var(--mute);border-right:0;overflow:hidden;transition:width .4s;border-radius:4px 0 0 4px}.gas{height:100%}
+.plg{width:10px;height:70px;background:var(--mute)}.rod{width:36px;height:10px;background:var(--mute);border-radius:0 4px 4px 0}
+.q{display:flex;gap:8px 12px;flex-wrap:wrap;align-items:center;margin:12px 0;padding:8px 0;border-bottom:1px dashed var(--line)}.q:last-child{border-bottom:none}.q span{flex:1 1 280px;font-weight:600}
+select,input,textarea{font:inherit;padding:9px 11px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);max-width:100%;transition:border-color .2s}
+select:focus,input:focus,textarea:focus{border-color:var(--acc);outline:none}
+textarea{width:100%;resize:vertical}input{width:100%;max-width:340px}
+.c{text-align:center}.m{color:var(--mute);font-size:.85rem}.out{font-weight:600;text-align:center;font-size:1.02rem}
+#nav{position:fixed;left:0;right:0;bottom:0;background:var(--paper);border-top:1px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));z-index:5;box-shadow:0 -4px 12px rgba(0,0,0,0.05)}
+#nav div{display:flex;gap:10px;max-width:820px;margin:0 auto}#nav button{flex:1}
+#pv{background:#ffffff;color:#111111;border:1px solid var(--line);padding:24px;border-radius:6px;margin:16px 0;font-size:.92rem;box-shadow:inset 0 0 8px rgba(0,0,0,0.03)}
+#pv h2{color:#0d6970;font-size:1.4rem;border-bottom:2px solid #0d6970;padding-bottom:6px;margin-top:0}
+#pv h3{color:#0d6970;border-bottom:1px solid #ced8dd;padding-bottom:4px;margin-top:18px;font-size:1.1rem}
+#pv h4{margin:12px 0 4px;font-family:Literata,serif;color:#121e24}#pv p{margin:4px 0}
+#pv table{background:#fff;color:#111;margin:12px 0}#pv th,#pv td{border-color:#ccc}
+.pdf-box{border-left:4px solid #0d6970;background:#f4f7f8;padding:10px 14px;margin:8px 0;border-radius:0 4px 4px 0;word-break:break-word}
+.pdf-eval{border:2px solid #0d6970;background:#ebf3f4;padding:14px;margin-top:20px;border-radius:6px}
+.locked-banner{background:var(--bad);color:#fff;padding:12px;border-radius:6px;text-align:center;font-weight:600;margin-bottom:14px;}
+
+@media print {
+  body { background: #fff !important; color: #000 !important; }
+  #top, #nav, main > .card:not(:last-child), button, .m, .res, .no-print, .locked-banner { display: none !important; }
+  main { max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
+  .card { border: none !important; box-shadow: none !important; padding: 0 !important; }
+  #pv { display: block !important; border: none !important; padding: 0 !important; margin: 0 !important; box-shadow: none !important; }
+}
+</style>
+</head>
+<body>
+<!-- STREAMING_CHUNK:Rendering main header and container... -->
+<div id="top">
+  <div>
+    <select id="menu" aria-label="Перейти до кроку" onchange="go(+this.value)"></select>
+    <button id="btn_reset_top" onclick="clearData()" title="Очистити всі збережені записи та почати заново">Почати спочатку</button>
+    <span id="save_status">✓ Збережено</span>
+  </div>
+  <div id="bar"><i></i></div>
+</div>
+<main id="m"></main>
+<div id="nav"><div><button class="g" id="bp" onclick="go(cur-1)">Назад</button><button id="bn" onclick="go(cur+1)">Далі</button></div></div>
+<script>
+/* STREAMING_CHUNK:Initializing state and constants... */
+const $=i=>document.getElementById(i);
+const D="вправо (→)|вліво (←)|не зміщується",OB="стало темнішим|стало світлішим|не змінилося";
+const Q={
+o11:["Пробірка №1 (додано KCNS) порівняно з еталоном","OB",1],
+o12:["Пробірка №2 (додано FeCl₃) порівняно з еталоном","OB",1],
+o13:["Пробірка №3 (додано KCl) порівняно з еталоном","OB",2],
+c11:["Пробірка №1: рівновага зміщується","D",1],
+c12:["Пробірка №2: рівновага зміщується","D",1],
+c13:["Пробірка №3: рівновага зміщується","D",2],
+o21:["Ампула А (80 °C) порівняно з еталоном","OB",1],
+o22:["Ампула Б (0 °C) порівняно з еталоном","OB",2],
+c21:["Нагрівання: рівновага зміщується","D",2],
+c22:["Охолодження: рівновага зміщується","D",1],
+c23:["Пряма реакція 2NO₂ → N₂O₄ є","екзотермічною (Q > 0)|ендотермічною (Q < 0)",1],
+o31:["Стискання (20 → 10 мл): забарвлення одразу","OB",1],
+o32:["Стискання: через кілька секунд (порівняно з «одразу»)","OB",2],
+o33:["Розтягування (20 → 40 мл): забарвлення одразу","OB",2],
+o34:["Розтягування: через кілька секунд (порівняно з «одразу»)","OB",1],
+c31:["Підвищення тиску: рівновага зміщується","D",1],
+c32:["Зниження тиску: рівновага зміщується","D",2],
+c33:["Причина зміщення","Праворуч 1 моль газу, ліворуч 2 моль|Праворуч 2 моль газу, ліворуч 1 моль|Кількість моль газу однакова",1],
+q1:["1. Хімічна рівновага називається динамічною, бо…","реакції повністю припиняються|швидкості прямої та зворотної реакцій рівні, обидві тривають|концентрації всіх речовин дорівнюють нулю",2],
+q2:["2. Підвищення температури зміщує рівновагу в бік…","екзотермічної реакції|реакції з більшим числом молекул|ендотермічної реакції",3],
+q3:["3. Підвищення тиску зміщує рівновагу в бік…","меншої кількості молекул газу|більшої кількості молекул газу|тиск ніколи не впливає",1],
+q4:["4. Додавання KCl до рівноважної суміші з Fe(CNS)₃…","посилює червоний колір|послаплює червоний колір (зростає концентрація продукту)|не змінює колір",2],
+q5:["5. Каталізатор…","прискорює встановлення рівноваги, не зміщуючи її|зміщує рівновагу вправо|збільшує константу рівноваги",1],
+q6:["6. Для H₂(г) + I₂(г) ⇌ 2HI(г) підвищення тиску…","зміщує вправо|зміщує вліво|не зміщує рівновагу: число моль газу не змінюється",3]
+};
+const ans={};
+let isLocked = false;
+
+const os=i=>{const o=Q[i][1];return o=="D"?D:o=="OB"?OB:o};
+const gt=i=>ans[i]>0?os(i).split("|")[ans[i]-1]:"не заповнено";
+const qs=ids=>ids.map(i=>`<div class="q"><span>${Q[i][0]}</span><select aria-label="${Q[i][0]}" ${isLocked?'disabled':''} onchange="ans.${i}=this.value;saveData();"><option value=0>— оберіть —</option>${os(i).split("|").map((x,k)=>`<option value=${k+1}${ans[i]==k+1?" selected":""}>${x}</option>`).join("")}</select></div>`).join("");
+
+/* STREAMING_CHUNK:Defining text input component with copy-paste lock... */
+const ta=(id,ph,min,r=5)=>`<textarea rows=${r} placeholder="${ph}" ${isLocked?'readonly':''} onpaste="return false;" ondrop="return false;" oninput="ans.${id}=this.value;$('n_${id}').textContent=this.value.length;checkStepValid();saveData();">${ans[id]||""}</textarea><div class="m">Символів: <span id="n_${id}">${(ans[id]||"").length}</span> (мінімум ${min}) · <i style="color:var(--red)">вставка тексту заборонена</i></div><div class="m" id="err_${id}" style="color:var(--red);display:none;font-weight:600;margin-top:4px;">* Для продовження обов’язково напишіть розширену відповідь (мінімум ${min} символів)!</div>`;
+
+const eq=(F,S,C,T)=>{const K=140*Math.exp(3000*(1/(T+273.15)-1/298.15))/(1+1.5*C),b=K*(F+S)+1;return(b-Math.sqrt(b*b-4*K*K*F*S))/(2*K)};
+const X0=eq(.002,.002,0,25);
+const mix=I=>{const t=1-Math.exp(-.55*I),a=[252,244,214],b=[150,10,18];return"rgb("+a.map((v,i)=>Math.round(v+(b[i]-v)*t))+")"};
+const ae=(v,K=11.11)=>{const k=8*K/v;return(-1+Math.sqrt(1+k))/(k/2)};
+const KT=T=>11.11*Math.exp(6856*(1/(T+273.15)-1/298.15));
+const gasc=r=>`rgba(150,65,8,${Math.min(.95,.5*r)})`;
+const tube=(c,h)=>`<div class="tube"><i style="height:${h}%;background:${c}"></i></div>`;
+let cur=0,step=0,tb=[0,1,2,3].map(()=>({F:.002,S:.002,C:0,n:0})),fl={A:25,B:25},fn={A:0,B:0},V=20,a3=ae(20),lg={},u3={},tm,last={x:0,v:20,t:""},saveTimer;
+const R3=ae(20)/20;
+
+function reset1(){
+  if(isLocked) return;
+  step=0;
+  tb=[0,1,2,3].map(()=>({F:.002,S:.002,C:0,n:0}));
+  if(cur==3) show();
+}
+
+function add(i){
+  if(isLocked) return;
+  const t=tb[i];
+  if(i==0)t.S+=.004;
+  if(i==1)t.F+=.004;
+  if(i==2)t.C+=.4;
+  t.n++;
+  show();
+  saveData();
+}
+
+const pct=i=>(tb&&tb[i])?Math.round(eq(tb[i].F,tb[i].S,tb[i].C,25)/X0*100):100;
+const f2=T=>ae(20,KT(T))/ae(20,KT(25));
+
+const STORAGE_KEY = "chem_lab1_persisted_state_v6";
+
+function saveData(){
+  try {
+    const payload = { cur, step, tb, fl, fn, u3, lg, ans, isLocked };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    const st = $("save_status");
+    if(st) {
+      st.style.opacity = "1";
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(() => { st.style.opacity = "0"; }, 1500);
+    }
+  } catch(e){}
+}
+
+function loadData(){
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return;
+    const data = JSON.parse(raw);
+    if(data.ans && typeof data.ans === 'object') Object.assign(ans, data.ans);
+    if(Array.isArray(data.tb) && data.tb.length === 4) tb = data.tb;
+    if(data.fl) Object.assign(fl, data.fl);
+    if(data.fn) Object.assign(fn, data.fn);
+    if(data.u3) Object.assign(u3, data.u3);
+    if(data.lg) Object.assign(lg, data.lg);
+    if(typeof data.step === "number") step = data.step;
+    if(typeof data.cur === "number") cur = data.cur;
+    if(typeof data.isLocked === "boolean") isLocked = data.isLocked;
+  } catch(e){}
+}
+
+function clearData(){
+  if(confirm("Ви дійсно бажаєте очистити всі збережені відповіді та почати спочатку?")) {
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  }
+}
+
+/* STREAMING_CHUNK:Defining experiments evaluation model... */
+const E=[
+{p:()=>step==4&&tb&&tb[0].n&&tb[1].n&&tb[2].n,o:["o11","o12","o13"],c:["c11","c12","c13"],a:()=>step<4?"Еталонний розчин не приготовлено або не розлито по пробірках.":`Приготовлено еталонний розчин. №1 — додано KCNS ×${tb[0].n}; №2 — додано FeCl₃ ×${tb[1].n}; №3 — додано KCl ×${tb[2].n}; №4 — еталон.`,d:()=>step<4?"Дослід не виконано.":`Інтенсивність відносно еталона: №1 — ${pct(0)}%, №2 — ${pct(1)}%, №3 — ${pct(2)}%.`},
+{p:()=>fn.A&&fn.B,o:["o21","o22"],c:["c21","c22","c23"],a:()=>`Ампулу А ${fn.A?"занурено в гарячу воду (80 °C)":"не нагрівали"}; ампулу Б ${fn.B?"занурено в лід (0 °C)":"не охолоджували"}; ампула В — еталон (25 °C).`,d:()=>`Інтенсивність бурого кольору відносно еталона: А — ${Math.round(f2(fl.A)*100)}%, Б — ${Math.round(f2(fl.B)*100)}%.`},
+{p:()=>u3[10]&&u3[40],o:["o31","o32","o33","o34"],c:["c31","c32","c33"],a:()=>`Об’єм змінювали до 10 мл: ${u3[10]?"так":"ні"}; до 40 мл: ${u3[40]?"так":"ні"}.`,d:()=>`Стискання до 10 мл: одразу ${lg[10]?lg[10].i:"—"}%, після рівноваги ${lg[10]?lg[10].e:"—"}%. Розтягування до 40 мл: одразу ${lg[40]?lg[40].i:"—"}%, після рівноваги ${lg[40]?lg[40].e:"—"}% (початок = 100%).`}];
+
+const ln=s=>(ans[s]||"").length;
+const frac=ids=>ids.filter(i=>ans[i]==Q[i][2]).length/ids.length;
+
+const pe=k=>{const e=E[k];return(e.p()?0.5:0)+((frac(e.o)+frac(e.c))/2)*1.0};
+const pt=()=>(2.0/6.0)*["q1","q2","q3","q4","q5","q6"].filter(i=>ans[i]==Q[i][2]).length;
+const tot=()=>Math.round((pe(0)+pe(1)+pe(2)+pt())*10)/10;
+
+const hd=t=>`<h2>${t}</h2>`;
+const T1="Дослід №1. Вплив концентрації реагуючих речовин",T2="Дослід №2. Вплив температури",T3="Дослід №3. Вплив тиску";
+
+function getExpSteps(n,nm,desc,run,obs,con){
+  return [
+    [`Дослід ${n} · Опис`,()=>hd(nm)+desc()],
+    [`Дослід ${n} · Виконання`,()=>hd(nm)+run()],
+    [`Дослід ${n} · Спостереження`,()=>hd(nm+" — спостереження")+`<div class="box"><b>Ваші дані:</b> ${E[n-1].d()}</div>`+obs()+`<h3>Опишіть спостереження своїми словами</h3>`+ta("t"+n+"o","Яким було забарвлення в кожному випадку? Як воно змінювалось?",40,4)],
+    [`Дослід ${n} · Висновок`,()=>hd(nm+" — висновок")+con()+`<h3>Сформулюйте висновок</h3><p class="m">Поясніть за принципом Ле Шательє, чому рівновага змістилась саме так.</p>`+ta("t"+n+"c","Висновок до досліду…",60,5)]
+  ];
+}
+
+function validateTitle(){
+ return !!((ans.nm||"").trim() && (ans.gr||"").trim());
+}
+
+/* STREAMING_CHUNK:Constructing pages list explicitly... */
+const P=[];
+P.push(["Титул",()=>`<div class="card cover"><div class="col">Харківський машинобудівний фаховий коледж</div><h1>ЛАБОРАТОРНА РОБОТА №1</h1><p><b>Тема:</b> дослідження впливу різних факторів на зміщення хімічної рівноваги</p><p class="l"><b>Мета:</b> експериментально з’ясувати, як зміна концентрації реагуючих речовин, температури й тиску впливають на положення хімічної рівноваги; навчитися передбачати напрям зміщення за принципом Ле Шательє.</p><p><input id="inp_nm" placeholder="Прізвище та ім’я *" aria-label="Прізвище та ім’я" ${isLocked?'readonly':''} value="${ans.nm||""}" oninput="ans.nm=this.value;checkStepValid();saveData();"></p><p><input id="inp_gr" placeholder="Група *" aria-label="Група" ${isLocked?'readonly':''} value="${ans.gr||""}" oninput="ans.gr=this.value;checkStepValid();saveData();"></p><p class="m" id="title_err" style="color:var(--red);${validateTitle()?'display:none;':''}">* Для переходу до виконання обов’язково вкажіть прізвище, ім’я та номер групи!</p><h3>Критерії оцінювання (12-бальна шкала)</h3><table><tr><th>Етап</th><th class="n">Балів</th></tr><tr><td>Дослід №1 (концентрація: 0.5 дія + 1.0 тести + 1.5 висновок)</td><td class="n">3.0</td></tr><tr><td>Дослід №2 (температура: 0.5 дія + 1.0 тести + 1.5 висновок)</td><td class="n">3.0</td></tr><tr><td>Дослід №3 (тиск: 0.5 дія + 1.0 тести + 1.5 висновок)</td><td class="n">3.0</td></tr><tr><td>Перевірочний тест (6 запитань, авт.)</td><td class="n">2.0</td></tr><tr><td>Загальний висновок (письмово, оцінює викладач)</td><td class="n">1.0</td></tr><tr><th>Разом</th><th class="n">12.0</th></tr></table><p class="l m">У кожному досліді: виконання дій — 0.5 б., вибір відповідей — 1.0 б. (автоматично); письмові спостереження й висновок — 1.5 б. (оцінює викладач). Тест — 2.0 б. за 6 питань. Загальний висновок — 1.0 б. оцінює викладач.</p><table><tr><th>Бали</th><td>1–3</td><td>4–6</td><td>7–9</td><td>10–12</td></tr><tr><th>Рівень</th><td>початковий</td><td>середній</td><td>достатній</td><td>високий</td></tr></table><p style="margin-top:20px;"><button class="g" onclick="clearData()">Скинути збережені дані</button></p></div>`]);
+P.push(["Теорія",()=>`<div class="card">${hd("Теоретичні відомості")}<p>Хімічна рівновага — стан оборотної реакції, коли швидкості прямої та зворотної реакцій однакові, а концентрації речовин постійні.</p><div class="box"><b>Принцип Ле Шательє:</b> якщо на систему в рівновазі подіяти зовнішнім чинником, рівновага зміщується в бік реакції, що послаблює цей вплив.</div><table><tr><th>Чинник</th><th>Напрям зміщення</th></tr><tr><td>Збільшення концентрації речовини</td><td>у бік її витрачання</td></tr><tr><td>Підвищення температури</td><td>у бік ендотермічної реакції</td></tr><tr><td>Підвищення тиску (для газів)</td><td>у бік меншої кількості молекул газу</td></tr><tr><td>Каталізатор</td><td>не зміщує, лише прискорює встановлення рівноваги</td></tr></table><p>Система для <b>досліду №1</b> — взаємодія ферум(III) хлориду з калій роданідом. Fe(CNS)₃ має інтенсивне червоне забарвлення:</p><div class="eq">FeCl₃ + 3KCNS ⇌ Fe(CNS)₃ + 3KCl</div><p>Система для <b>дослідів №2 і №3</b> — <b>діоксид Нітрогену NO₂</b> (бурий газ) і <b>тетраоксид динітрогену N₂O₄</b> (безбарвний):</p><div class="eq">2NO₂ ⇌ N₂O₄ + Q &nbsp; (ΔH ≈ −57 кДж/моль)</div><p class="m">Хімічна модель спрощена, але передає правильні якісні висновки.</p></div>`]);
+
+getExpSteps(1,T1,()=>`<div class="card"><p><b>Мета:</b> з’ясувати, як зміна концентрації реагентів і продуктів впливає на рівновагу.</p><div class="eq">FeCl₃ + 3KCNS ⇌ Fe(CNS)₃ + 3KCl</div><p><b>Послідовність виконання:</b></p><ol><li><b>Приготування еталонного розчину:</b> у склянку налийте 20 мл дистильованої води, додайте 1–2 краплі розчину FeCl₃ (розчин набуває жовтуватого відтінку), після чого додайте 1–2 краплі розчину KCNS до появи інтенсивного червоного забарвлення Fe(CNS)₃.</li><li><b>Розподіл розчину:</b> розлийте одержаний еталонний розчин порівну у 4 пробірки.</li><li><b>Проведення реакцій:</b> у 1-шу пробірку додайте концентрований розчин KCNS, у 2-гу — розчин FeCl₃, у 3-тю — кристалічний KCl. 4-ту пробірку залиште без змін для порівняння.</li><li><b>Спостереження:</b> порівняйте інтенсивність забарвлення розчинів у пробірках з еталоном.</li></ol></div>`,
+()=>`<div class="card"><div class="steps"><button onclick="step=1;show();saveData();" ${step!=0||isLocked?"disabled":""}>1. Налити 20 мл води</button><button onclick="step=2;show();saveData();" ${step!=1||isLocked?"disabled":""}>2. Додати 1–2 кр. FeCl₃</button><button onclick="step=3;show();saveData();" ${step!=2||isLocked?"disabled":""}>3. Додати 1–2 кр. KCNS</button><button onclick="step=4;show();saveData();" ${step!=3||isLocked?"disabled":""}>4. Розлити у 4 пробірки</button><button class="g" ${isLocked?'disabled':''} onclick="reset1();show();saveData();">Спочатку</button></div><div class="lab"><div class="tc"><div class="bk">${step?`<i style="height:70%;background:${step==1?"#dcecf2":step==2?"#f5e6a3":mix(1)}"></i>`:""}</div>Склянка<br><span class="m">${step==0?"порожня":step==1?"дистильована вода":step==2?"вода + FeCl₃":step==3?"еталонний розчин":"розлито"}</span></div></div><div class="lab">${tb.map((t,i)=>{const I=pct(i)/100;return`<div class="tc">${step==4?tube(mix(I),70):tube("transparent",0)}<b>№${i+1}${i==3?" еталон":""}</b><span>${step==4?pct(i)+"\%":"порожня"}</span>${i<3?`<button ${step<4||isLocked?"disabled":""} onclick="add(${i})">${["Додати KCNS (конц.)","Додати FeCl₃ (конц.)","Додати кристали KCl"][i]}</button>`:""}</div>`}).join("")}</div><p class="c m">Інтенсивність — відносно еталона (100%). Кнопки реактивів можна натискати кілька разів.</p></div>`,
+()=>qs(["o11","o12","o13"]),()=>qs(["c11","c12","c13"])).forEach(s=>P.push(s));
+
+getExpSteps(2,T2,()=>`<div class="card"><p><b>Мета:</b> з’ясувати, як температура впливає на рівновагу в системі NO₂ ⇌ N₂O₄.</p><div class="eq">2NO₂ (бурий) ⇌ N₂O₄ (безбарвний) + Q</div><p><b>Хід роботи.</b> Є три однакові запаяні ампули з рівноважною сумішшю газів при 25 °C. Ампулу А занурте в гарячу воду (80 °C), ампулу Б — у льодяну баню (0 °C), ампулу В залиште як еталон. Через кілька хвилин порівняйте колір газу в ампулах А і Б з еталоном.</p><p class="m">Чим бурішим є колір, тим більше NO₂ у суміші.</p></div>`,
+()=>`<div class="card"><div class="lab">${[["A","У гарячу воду (80 °C)",80],["B","У лід (0 °C)",0]].map(([k,t,T])=>`<div class="tc"><div class="tube fl"><i style="height:100%;background:${gasc(f2(fl[k]))}"></i></div><b>Ампула ${k=="A"?"А":"Б"}: ${fl[k]} °C</b><button${isLocked?'disabled':''} onclick="fl.${k}=${T};fn.${k}=1;show();saveData();">${t}</button></div>`).join("")}<div class="tc"><div class="tube fl"><i style="height:100%;background:${gasc(1)}"></i></div><b>Ампула В: 25 °C</b><span>еталон</span></div></div><p class="c"><button class="g" ${isLocked?'disabled':''} onclick="fl={A:25,B:25};show();saveData();">Повернути ампули до 25 °C</button></p></div>`,
+()=>qs(["o21","o22"]),()=>qs(["c21","c22","c23"])).forEach(s=>P.push(s));
+
+getExpSteps(3,T3,()=>`<div class="card"><p><b>Мета:</b> з’ясувати, як тиск впливає на рівновагу в газовій системі.</p><div class="eq">2NO₂ (бурий) ⇌ N₂O₄ (безбарвний) + Q</div><p><b>Хід роботи.</b> У герметичному шприці об’ємом 20 мл міститься рівноважна газова суміш NO₂ і N₂O₄. Швидко стисніть газ до 10 мл і зафіксуйте колір одразу та через кілька секунд після встановлення рівноваги. Поверніть поршень до 20 мл. Потім швидко розтягніть газ до 40 мл і знову зафіксуйте зміни забарвлення.</p></div>`,
+()=>`<div class="card"><div class="sy"><div class="barrel" id="bar3"><div class="gas" id="gas3"></div></div><div class="plg"></div><div class="rod"></div></div><p class="out" id="vi"></p><div class="steps"><button ${isLocked?'disabled':''} onclick="setV(10)">Стиснути до 10 мл</button><button ${isLocked?'disabled':''} onclick="setV(20)">Повернути до 20 мл</button><button ${isLocked?'disabled':''} onclick="setV(40)">Розтягнути до 40 мл</button></div><p class="c m">Спостерігайте: колір змінюється одразу, а потім ще змінюється протягом кількох секунд.</p></div>`,
+()=>qs(["o31","o32","o33","o34"]),()=>qs(["c31","c32","c33"])).forEach(s=>P.push(s));
+
+P.push(["Тест",()=>`<div class="card">${hd("Перевірочний тест")}<p class="m">Шість запитань, всього 2.0 бали (по ~0.33 бала за відповідь).</p>${qs(["q1","q2","q3","q4","q5","q6"])}</div>`]);
+P.push(["Загальний висновок",()=>`<div class="card">${hd("Загальний висновок")}<p>Підсумуйте всю роботу (мінімум 250 символів, оцінюється в 1.0 бал). Включіть:</p><ul><li>як сформульовано принцип Ле Шательє;</li><li>що ви спостерігали в кожному досліді (концентрація, температура, тиск) і в який бік зміщувалась рівновага;</li><li>чому нагрівання й стискання впливають по-різному на систему NO₂ ⇌ N₂O₄;</li><li>де це знання застосовують у промисловості (наприклад, синтез аміаку, виробництво сульфатної кислоти).</li></ul>${ta("gc","Загальний висновок…",250,10)}</div>`]);
+P.push(["Протокол",()=>`<div class="card"><div class="no-print">${hd("Протокол звіту")}<p>Протокол містить ваші дії, спостереження, висновки, результати тесту й оцінку. Завантажте файл у форматі PDF і прикріпіть його до завдання в Google Класі.</p>${!isLocked?`<p class="c"><button onclick="mk()">Сформувати протокол</button></p>`:''}</div><div id="rp"></div></div>`]);
+
+/* STREAMING_CHUNK:Implementing navigation and validation logic... */
+function checkStepValid(){
+ let isValid=true;
+ if(cur===0){
+  isValid=validateTitle();
+  const err=$("title_err");
+  if(err) err.style.display=isValid?"none":"block";
+ } else {
+  const reqs={
+   4:["t1o",40],5:["t1c",60],
+   8:["t2o",40],9:["t2c",60],
+   12:["t3o",40],13:["t3c",60],
+   15:["gc",250]
+  };
+  if(reqs[cur]){
+   const [id,min]=reqs[cur];
+   isValid=ln(id)>=min;
+   const err=$("err_"+id);
+   if(err) err.style.display=isValid?"none":"block";
+  }
+ }
+ $("bn").disabled=(cur===P.length-1) || !isValid;
+ return isValid;
+}
+
+function show(){
+ const p=P[cur];
+ if(!p) return;
+ let html = p[1]();
+ if(isLocked) {
+   html = `<div class="locked-banner">🔒 Протокол вже сформовано. Внесення змін або перескладання тесту заблоковано. Щоб виконати роботу заново, натисніть "Почати спочатку".</div>` + html;
+ }
+ $("m").innerHTML=html;
+ $("bp").disabled=cur==0;
+ $("bar").firstChild.style.width=(cur/(P.length-1)*100)+"%";
+ $("menu").value=cur;
+ checkStepValid();
+ if(cur==12)draw3(last.x,false,last.v,last.t);
+ if(cur==16 && isLocked) renderReportView();
+}
+
+function go(n){
+ if(n<0||n>=P.length)return;
+ if(n>cur && !checkStepValid()) return;
+ cur=n;
+ show();
+ saveData();
+ scrollTo(0,0);
+}
+
+$("menu").innerHTML=P.map((p,i)=>`<option value=${i}>${i+1}/${P.length} · ${p[0]}</option>`).join("");
+function draw3(x,slow,v,t){last={x,v,t};const g=$("gas3");if(!g)return;g.style.transition=slow?"background 1s":"none";g.style.background=gasc(x/R3);$("bar3").style.width=v*6+"px";$("vi").textContent=`Об’єм ${v} мл · тиск ≈ ${Math.round(101*20/v)} кПа · забарвлення ${Math.round(x/R3*100)}% від початкового${t?" · "+t:""}`}
+function setV(v){if(isLocked) return; clearTimeout(tm);const x0=a3/v;draw3(x0,false,v,"одразу після зміни");u3[v]=1;saveData();tm=setTimeout(()=>{a3=ae(v);draw3(a3/v,true,v,"рівновага встановилась");if(v!=20)lg[v]={i:Math.round(x0/R3*100),e:Math.round(a3/v/R3*100)};saveData();},1500)}
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>");
+
+/* STREAMING_CHUNK:Building report data structure... */
+function build(){
+ const B=[],mk=i=>Q[i][0]+": "+gt(i)+(ans[i]==Q[i][2]?" ✓":" ✗");
+ const nms=[T1,T2,T3];
+ [0,1,2].forEach(k=>{
+   const e=E[k],n=k+1;
+   B.push([nms[k],[
+     "Виконані дії: "+e.a()+(e.p()?" ✓":" ✗ (виконано не всі дії)"),
+     "Ваші дані: "+e.d(),
+     "<b>Спостереження:</b>",...e.o.map(mk),
+     "<b>Письмові спостереження:</b><div class='pdf-box'>"+esc(ans["t"+n+"o"]||"—")+"</div>",
+     "<b>Висновки:</b>",...e.c.map(mk),
+     "<b>Письмовий висновок:</b><div class='pdf-box'>"+esc(ans["t"+n+"c"]||"—")+"</div>",
+     `<b>Автоматичний бал за дослід: ${pe(k).toFixed(1)} із 1.5</b> (дії: ${e.p()?0.5:0}/0.5, вибір відповідей: ${((frac(e.o)+frac(e.c))/2*1.0).toFixed(1)}/1.0). <br><i>Письмові частини (до 1.5 б.) оцінюються викладачем.</i>`
+   ]]);
+ });
+ const qi=["q1","q2","q3","q4","q5","q6"];
+ B.push(["Перевірочний тест",[...qi.map(i=>Q[i][0]+" — "+gt(i)+(ans[i]==Q[i][2]?" ✓":" ✗")),`<b>Бал за тест: ${pt().toFixed(1)} із 2.0</b>`]]);
+ B.push(["Загальний висновок",["<div class='pdf-box'>"+esc(ans.gc||"—")+"</div><p><i>Оцінюється викладачем (до 1.0 бала).</i></p>"]]);
+ return B;
+}
+
+function renderReportView(){
+ const B=build(),p=tot(),d=new Date().toLocaleDateString("uk-UA");
+ const head=[["Харківський машинобудівний фаховий коледж",["<h2>ПРОТОКОЛ ЛАБОРАТОРНОЇ РОБОТИ №1</h2>","<b>Тема:</b> дослідження впливу різних факторів на зміщення хімічної рівноваги","<b>Мета:</b> експериментально з’ясувати, як зміна концентрації реагуючих речовин, температури й тиску впливають на положення хімічної рівноваги; навчитися передбачати напрям зміщення за принципом Ле Шательє.",`<b>Студент(ка):</b> ${esc(ans.nm)} &nbsp;&nbsp;|&nbsp;&nbsp; <b>Група:</b> ${esc(ans.gr)}`,`<b>Дата виконання:</b> ${d}`]]];
+ const foot=[["ОЦІНЮВАННЯ ТА ПІДСУМОК (заповнює викладач)",[`<div class='pdf-eval'>
+   <p><b>Автоматично нараховано:</b> ${p.toFixed(1)} із 6.5 балів.</p>
+   <p>• Дослід №1: ${pe(0).toFixed(1)} / 1.5 б. &nbsp;&nbsp;|&nbsp;&nbsp; • Дослід №2: ${pe(1).toFixed(1)} / 1.5 б. &nbsp;&nbsp;|&nbsp;&nbsp; • Дослід №3: ${pe(2).toFixed(1)} / 1.5 б. &nbsp;&nbsp;|&nbsp;&nbsp; • Тест: ${pt().toFixed(1)} / 2.0 б.</p>
+   <hr style="border:0; border-top:1px dashed #0d6970; margin:10px 0;">
+   <p><b>Бали викладача за письмові блоки (макс 5.5):</b></p>
+   <p>• Спостереження та висновки до дослідів (до 1.5 б. за кожний дослід, макс 4.5 б.): ____ б.</p>
+   <p>• Загальний висновок (макс 1.0 б.): ____ б.</p>
+   <p style="font-size:1.1rem; margin-top:10px;"><b>ПІДСУМКОВА ОЦІНКА: ________ із 12 балів</b></p>
+   <p style="margin-top:10px;">Підпис викладача: ____________________</p>
+ </div>`]]];
+ 
+ const all=[...head,...B,...foot];
+ const body=all.map(([h,l])=>`<h3>${h}</h3>`+l.map(x=>`<p>${x}</p>`).join("")).join("");
+ const txt=all.map(([h,l])=>h+"\n"+l.map(x=>x.replace(/<[^>]*>/g,'')).join("\n")).join("\n\n");
+ window.RPT={body,txt};
+ 
+ const rpEl = $("rp");
+ if(rpEl){
+   rpEl.innerHTML=`<div class="res c no-print"><h3>Автоматично нараховано: ${p.toFixed(1)} із 6.5 б.</h3><p class="m">Автоматично перевірено виконання дій у симуляторі, вибір відповідей та тест. Остаточну оцінку (до 12 балів) ставить викладач після перевірки письмових блоків.</p></div>
+   <p class="c no-print"><button onclick="window.print()">Завантажити звіт у PDF / Друк</button> <button class="g" onclick="cp()">Копіювати текст</button></p>
+   <p class="c m no-print" id="st">При натисканні «Завантажити звіт у PDF» оберіть <b>«Зберегти як PDF»</b> у списку принтерів браузера.</p>
+   <div id="pv">${body}</div>`;
+ }
+}
+
+/* STREAMING_CHUNK:Generating clean report view for print/PDF... */
+function mk(){
+ const miss=[];
+ if(!(ans.nm||"").trim())miss.push("прізвище та ім’я (крок «Титул»)");
+ if(!(ans.gr||"").trim())miss.push("групу (крок «Титул»)");
+ if(ln("gc")<250)miss.push("загальний висновок: мінімум 250 символів, зараз "+ln("gc"));
+ ["t1o","t1c","t2o","t2c","t3o","t3c"].forEach(k=>{
+  const m=k[2]=="o"?40:60;
+  if(ln(k)<m)miss.push("письмову відповідь до досліду "+k[1]+(k[2]=="o"?" (спостереження)":" (висновок)")+": мінімум "+m+" символів")
+ });
+ if(miss.length){$("rp").innerHTML=`<div class="box" style="border-left-color:var(--red);"><b>Необхідно заповнити:</b> ${miss.join("; ")}.</div>`;return}
+ 
+ if(!confirm("Ви впевнені, що бажаєте сформувати остаточний протокол? Після цього редагування відповідей буде заблоковано!")) {
+   return;
+ }
+
+ isLocked = true;
+ saveData();
+ show();
+}
+
+async function cp(){
+ try{
+  await navigator.clipboard.writeText(RPT.txt);
+  $("st").textContent="Текст скопійовано. Ви можете вставити його в будь-який редактор."
+ }catch(e){
+  $("rp").insertAdjacentHTML("beforeend",`<textarea rows=8 readonly onfocus="this.select()">${esc(RPT.txt)}</textarea>`);
+  $("st").textContent="Виділіть текст нижче й скопіюйте вручну."
+ }
+}
+
+loadData();
+show();
+</script>
+</body>
+</html>
